@@ -5,7 +5,7 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-func parseAndTransformYAML(input []byte, newNamespace string) ([]byte, error) {
+func parseAndTransformYAML(input []byte, newNamespace string, newName string) ([]byte, error) {
 	var resources []KubernetesResource
 	decoder := yaml.NewDecoder(bytes.NewReader(input))
 
@@ -16,8 +16,9 @@ func parseAndTransformYAML(input []byte, newNamespace string) ([]byte, error) {
 			break
 		}
 
-		// Alterar o namespace
+		// Alterar o namespace e o nome
 		resource.Metadata.Namespace = newNamespace
+		resource.Metadata.Name = newName
 
 		// Remover campos desnecessários
 		switch resource.Kind {
@@ -28,6 +29,7 @@ func parseAndTransformYAML(input []byte, newNamespace string) ([]byte, error) {
 				return nil, err
 			}
 			deployment.Metadata.Namespace = newNamespace
+			deployment.Metadata.Name = newName
 			// Remova campos desnecessários aqui
 			// Exemplo: remover status
 			// deployment.Status = nil
